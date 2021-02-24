@@ -28,10 +28,12 @@ class MyHomePage extends StatelessWidget {
         title: Text('Expense Planner'),
         backgroundColor: Colors.purple,
       ),
-      body: Column(
-        //mainAxisAlignment: MainAxisAlignment.spaceEvenly, // for vertically gap between each widgets
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[UserTransaction()],
+      body: SingleChildScrollView(
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceEvenly, // for vertically gap between each widgets
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[UserTransaction()],
+        ),
       ),
     );
   }

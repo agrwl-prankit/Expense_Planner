@@ -1,8 +1,7 @@
-import 'file:///D:/Flutter_project/expense_planner/lib/model/transaction.dart';
 import 'package:expense_planner/widget/new_transactions.dart';
 import 'package:expense_planner/widget/transaction_list.dart';
-import 'package:expense_planner/widget/user_transactions.dart';
 import 'package:flutter/material.dart';
+import './model/transaction.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,10 +15,33 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final List<Transaction> transactions = [];
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<Transaction> _userTransaction = [];
+
+  void _addNewTransaction(String txTitle, double txAmount) {
+    final newTx = Transaction(
+        DateTime.now().toString(), txTitle, txAmount, DateTime.now());
+
+    setState(() {
+      _userTransaction.add(newTx);
+    });
+  }
+
+  void _startAddNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+              onTap: () {},
+              child: NewTransaction(_addNewTransaction),
+          behavior: HitTestBehavior.opaque,);
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +49,23 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Expense Planner'),
         backgroundColor: Colors.purple,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => _startAddNewTransaction(context))
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.spaceEvenly, // for vertically gap between each widgets
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[UserTransaction()],
+          children: <Widget>[TransactionList(_userTransaction)],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _startAddNewTransaction(context),
       ),
     );
   }

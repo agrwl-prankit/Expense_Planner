@@ -1,3 +1,4 @@
+import './widget/chart.dart';
 import 'package:expense_planner/widget/new_transactions.dart';
 import 'package:expense_planner/widget/transaction_list.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransaction = [];
 
+  List<Transaction> get _recentTransactions {
+    return _userTransaction.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
+
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
         DateTime.now().toString(), txTitle, txAmount, DateTime.now());
@@ -40,9 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-              onTap: () {},
-              child: NewTransaction(_addNewTransaction),
-          behavior: HitTestBehavior.opaque,);
+            onTap: () {},
+            child: NewTransaction(_addNewTransaction),
+            behavior: HitTestBehavior.opaque,
+          );
         });
   }
 
@@ -62,7 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.spaceEvenly, // for vertically gap between each widgets
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[TransactionList(_userTransaction)],
+          children: <Widget>[
+            Chart(_recentTransactions),
+            TransactionList(_userTransaction)
+          ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
